@@ -11,8 +11,8 @@ class PidController():
         self.linear_ki = 0
         self.linear_kd = 1.5
 
-        self.angular_kp = 2
-        self.angular_ki = 1
+        self.angular_kp = 2.2
+        self.angular_ki = 1.
         self.angular_kd = 1
 
         self.old_linE = 0.0
