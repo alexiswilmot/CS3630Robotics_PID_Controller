@@ -7,9 +7,9 @@ from rps.utilities.controllers import *
 class PidController():
     def __init__(self):
         #TODO: tune the gains as needed
-        self.linear_kp = 2
-        self.linear_ki = 1
-        self.linear_kd = .5
+        self.linear_kp = 1.5
+        self.linear_ki = 0
+        self.linear_kd = 1.5
 
         self.angular_kp = 2
         self.angular_ki = 1
@@ -24,7 +24,7 @@ class PidController():
     def linear_controller(self, pose, goal_point):
         """
         Set the linear velocity based on the robot's current pose and goal_point.
-        
+         
         Parameters:
             pose (np.array): Current pose (x, y, theta)
             goal_point (np.array): Goal pose at the end of the trajectory (x, y)
@@ -34,8 +34,8 @@ class PidController():
         #TODO: return the linear velocity based on the robot's current pose and goal_point. 
         # proportional control: y = K_p(e)
         # linear_error
-        linE = np.linalg.norm(pose[:2] - goal_point)
-        print(linE)
+        linE = np.linalg.norm(goal_point - pose[:2])
+        #print(linE)
         prop = self.linear_kp * linE # gain * current linear error
 
         # integral part
@@ -44,18 +44,26 @@ class PidController():
 
         # derivative
         deriv = self.linear_kd * (linE - self.old_linE)
+        #print(deriv)
         self.old_linE = linE 
-        print(prop + integ + deriv)
-        if (linE < .35) & (linE > .01):
-            #if (prop + integ + deriv)
-            if (-1.1 * (prop + integ + deriv) < .007):
-                return .02
-            return -1.3 * (prop+ integ + deriv)
-        if linE <= .01:
-            #return -1.5 * (prop + integ + deriv)
-            return -.2
-            #return 0
-        return prop + integ + deriv
+        #print(deriv)
+        #print(.005 * (prop + integ + deriv))
+        if (linE < .5):
+            #print(np.linalg.norm(pose[:2] - goal_point))
+            if (np.linalg.norm(pose[:2] - goal_point) < .03):
+                return -.2
+                return -.2 * abs((prop + integ + deriv))
+            return max(.005 * (prop + integ + deriv), .03)
+        #     
+        #     if (np.linalg.norm(pose[:2] - goal_point) < .1):
+        #         return .02
+        #     return -1.3 * (prop+ integ + deriv)
+        # if linE <= .02:
+        #     #return -1.5 * (prop + integ + deriv)
+        #     return -.2
+        #     #return 0
+        #print(prop + integ + deriv)
+        return .7 * (prop + integ + deriv)
 
     def angular_controller(self, pose, waypoint):
         """
@@ -83,7 +91,9 @@ class PidController():
         # update
         self.old_angE = angE
 
+        
         tot = prop + integ + deriv
+        #print(tot)
         return tot
 
     def set_velocity(self, pose, waypoint, goal_point):
