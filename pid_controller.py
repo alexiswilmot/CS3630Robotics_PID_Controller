@@ -7,13 +7,13 @@ from rps.utilities.controllers import *
 class PidController():
     def __init__(self):
         #TODO: tune the gains as needed
-        self.linear_kp = 1.5
-        self.linear_ki = 0
-        self.linear_kd = 1.5
+        self.linear_kp = 1.5 # 1.5
+        self.linear_ki = 0 # 0
+        self.linear_kd = 1.5 # 1.5
 
-        self.angular_kp = 2.2
-        self.angular_ki = 1.
-        self.angular_kd = 1
+        self.angular_kp = 2.9 # 2.2
+        self.angular_ki = 1.1 # 1.0
+        self.angular_kd = 2.2 # 1
 
         self.old_linE = 0.0
         self.integral_linE = 0.0
@@ -53,7 +53,7 @@ class PidController():
             if (np.linalg.norm(pose[:2] - goal_point) < .03):
                 return -.2
                 return -.2 * abs((prop + integ + deriv))
-            return max(.005 * (prop + integ + deriv), .03)
+            return max(.005 * (prop + integ + deriv), .05) # .005, .04
         #     
         #     if (np.linalg.norm(pose[:2] - goal_point) < .1):
         #         return .02
@@ -63,7 +63,7 @@ class PidController():
         #     return -.2
         #     #return 0
         #print(prop + integ + deriv)
-        return .7 * (prop + integ + deriv)
+        return (prop + integ + deriv)
 
     def angular_controller(self, pose, waypoint):
         """
