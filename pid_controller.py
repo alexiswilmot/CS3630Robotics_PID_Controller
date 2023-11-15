@@ -13,7 +13,7 @@ class PidController():
 
         self.angular_kp = 6
         self.angular_ki = 1.1
-        self.angular_kd = 2.5
+        self.angular_kd = 2.3
         # self.angular_kp = 4 # 2.9
         # self.angular_ki = 1.0 # 1.1
         # self.angular_kd = 2.8 # 2.2
@@ -56,7 +56,7 @@ class PidController():
             if (np.linalg.norm(pose[:2] - goal_point) < .03):
                 return -.2
                 return -.2 * abs((prop + integ + deriv))
-            return max(.005 * (prop + integ + deriv), .06) # .005, .04
+            return max(.005 * (prop + integ + deriv), .045) # .005, .04
         #     
         #     if (np.linalg.norm(pose[:2] - goal_point) < .1):
         #         return .02
