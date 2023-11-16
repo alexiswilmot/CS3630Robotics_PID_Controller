@@ -12,11 +12,11 @@ class PidController():
         self.linear_kd = 2 # 1.5
 
         self.angular_kp = 6
-        self.angular_ki = 1.1
-        self.angular_kd = 2.3
-        # self.angular_kp = 4 # 2.9
+        self.angular_ki = .8
+        self.angular_kd = 2.9 # 2.9 got 19/30, 2.7 got 18
+        # self.angular_kp = 4 # 6
         # self.angular_ki = 1.0 # 1.1
-        # self.angular_kd = 2.8 # 2.2
+        # self.angular_kd = 2.8 # 2.3
 
         self.old_linE = 0.0
         self.integral_linE = 0.0
@@ -51,12 +51,12 @@ class PidController():
         self.old_linE = linE 
         #print(deriv)
         #print(.005 * (prop + integ + deriv))
-        if (linE < .5):
+        if (linE < .45):
             #print(np.linalg.norm(pose[:2] - goal_point))
             if (np.linalg.norm(pose[:2] - goal_point) < .03):
                 return -.2
                 return -.2 * abs((prop + integ + deriv))
-            return max(.005 * (prop + integ + deriv), .045) # .005, .04
+            return max(.005 * (prop + integ + deriv), .05) # .005, .04
         #     
         #     if (np.linalg.norm(pose[:2] - goal_point) < .1):
         #         return .02
